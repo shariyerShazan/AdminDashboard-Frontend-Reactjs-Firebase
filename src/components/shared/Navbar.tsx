@@ -1,9 +1,31 @@
+import { useLocation } from "react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function Navbar() {
+  const location = useLocation();
+
+  // Route to Title mapping
+  const getTitle = (pathname: string) => {
+    switch (pathname) {
+      case "/overview":
+        return "Dashboard";
+      case "/news-and-update":
+        return "News & Updates";
+      case "/users-management":
+        return "User Management";
+      case "/settings":
+        return "Settings";
+      default:
+        return "ScorePulse";
+    }
+  };
+
   return (
     <header className="flex h-24 items-center justify-between px-8 bg-[#121212] border-b border-white/5 text-white rounded-b-[40px] shadow-2xl">
-      <h1 className="text-2xl pl-8 sm:pl-0 font-bold tracking-tight">Dashboard</h1>
+      {/* Dynamic Title based on Route */}
+      <h1 className="text-2xl pl-12 md:pl-0 font-bold tracking-tight transition-all">
+        {getTitle(location.pathname)}
+      </h1>
 
       <div className="flex items-center gap-4">
         <div className="text-right hidden sm:block">
