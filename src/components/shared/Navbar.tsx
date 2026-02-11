@@ -26,7 +26,7 @@ export function Navbar() {
       <h1 className="text-2xl pl-12 md:pl-0 font-bold tracking-tight transition-all">
         {getTitle(location.pathname)}
       </h1>
-
+{/*  */}
       <div className="flex items-center gap-4">
         <div className="text-right hidden sm:block">
           <p className="text-sm font-bold">Malina Gates</p>
