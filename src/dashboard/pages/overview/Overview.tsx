@@ -1,11 +1,15 @@
 // import React from 'react'
 
-const Overview = () => {
+import { DashboardStats } from "./_components/DashboardStats"
+import { RecentUserOverview } from "./_components/RecentUserOverview"
+
+const AdminOverview = () => {
   return (
     <div>
-      
+      <DashboardStats />
+      <RecentUserOverview />
     </div>
   )
 }
 
-export default Overview
+export default AdminOverview;
