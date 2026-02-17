@@ -4,10 +4,18 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Dashboard", path: "/overview" },
-  { icon: Newspaper, label: "News & Updates", path: "/news-and-update" },
-  { icon: Users, label: "User Management", path: "/users-management" },
-  { icon: Settings, label: "Settings", path: "/settings" },
+  { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard/overview" },
+  {
+    icon: Newspaper,
+    label: "News & Updates",
+    path: "/dashboard/news-and-update",
+  },
+  {
+    icon: Users,
+    label: "User Management",
+    path: "/dashboard/users-management",
+  },
+  { icon: Settings, label: "Settings", path: "/dashboard/settings" },
 ];
 
 // Extracted for reuse

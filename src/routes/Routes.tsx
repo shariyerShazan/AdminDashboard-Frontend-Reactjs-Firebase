@@ -1,14 +1,17 @@
 import ErrorPage from "@/components/shared/ErrorPage";
+import ForgotPasswordPage from "@/dashboard/pages/login/ForgotPasswordPage";
+import LoginPage from "@/dashboard/pages/login/LoginPage";
 import NewsAndUpdate from "@/dashboard/pages/newsAndUpdate/NewsAndUpdate";
 import AdminOverview from "@/dashboard/pages/overview/Overview";
 import DashboardSetting from "@/dashboard/pages/setting/Setting";
 import UserManagement from "@/dashboard/pages/userManagement/UserManagement";
 import MainLayout from "@/layouts/MainLayout";
+// import path from "path";
 import { createBrowserRouter } from "react-router";
 
 export const Routes = createBrowserRouter([
   {
-    path: "",
+    path: "dashboard",
     element: <MainLayout />,
     errorElement: <ErrorPage />,
     children: [
@@ -30,4 +33,12 @@ export const Routes = createBrowserRouter([
       }
     ],
   },
+  {
+    path: "login" ,
+    element: <LoginPage />
+  },
+  {
+    path: "forgot-password" ,
+    element: <ForgotPasswordPage />
+  }
 ]);

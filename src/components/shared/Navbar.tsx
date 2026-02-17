@@ -23,7 +23,7 @@ export function Navbar() {
   return (
     <header className="flex h-24 items-center justify-between px-8 bg-[#121212] border-b border-white/5 text-white rounded-b-[40px] shadow-2xl">
       {/* Dynamic Title based on Route */}
-      <h1 className="text-2xl pl-12 md:pl-0 font-bold tracking-tight transition-all">
+      <h1 className="text-lg md:text-2xl pl-12 md:pl-0 font-bold tracking-tight transition-all">
         {getTitle(location.pathname)}
       </h1>
 {/*  */}
@@ -32,7 +32,7 @@ export function Navbar() {
           <p className="text-sm font-bold">Malina Gates</p>
           <p className="text-xs text-gray-400">Admin</p>
         </div>
-        <Avatar className="h-12 w-12 border-2 border-white/10 transition-transform cursor-pointer hover:scale-105">
+        <Avatar className="h-10 w-10 md:h-12 md:w-12 border-2 border-white/10 transition-transform cursor-pointer hover:scale-105">
           <AvatarImage src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150" />
           <AvatarFallback className="bg-slate-800">MG</AvatarFallback>
         </Avatar>
