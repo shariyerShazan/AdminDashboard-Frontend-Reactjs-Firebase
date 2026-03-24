@@ -16,27 +16,29 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { ImagePlus, Plus, X } from "lucide-react";
+import { ImagePlus, Plus, X, Loader2 } from "lucide-react";
+import { useCreateNewsMutation, type NewsCategory } from "@/redux/news/news.api";
+import { toast } from "react-toastify";
+
 
 export function NewsDialog() {
+  const [open, setOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Handle file selection via browse
+  const [createNews, { isLoading }] = useCreateNewsMutation();
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
     }
   };
 
-  // Drag and Drop handlers
   const onDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
   };
-
-  const onDragLeave = () => setIsDragging(false);
 
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -46,21 +48,31 @@ export function NewsDialog() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget as HTMLFormElement);
-    const data = {
-      title: formData.get("title"),
-      description: formData.get("description"),
-      category: formData.get("category"),
-      image: file,
+    if (!file) return toast.error("Please upload an image");
+
+    const formData = new FormData(e.currentTarget);
+    const payload = {
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
+      category: formData.get("category") as NewsCategory,
+      file: file,
     };
-    console.log("Submitting Data:", data);
-    // Add your API call here
+
+    try {
+      await createNews(payload).unwrap();
+      toast.success("News created successfully!");
+      setOpen(false);
+      setFile(null);
+    } catch (error) {
+      console.log(error)
+      toast.error("Failed to create news");
+    }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="bg-[#00C853] hover:bg-[#00b049] cursor-pointer text-white rounded-full px-5 py-2.5 h-auto font-semibold flex items-center gap-2 transition-all active:scale-95 shadow-sm">
           <Plus size={18} strokeWidth={2.5} />
@@ -102,14 +114,14 @@ export function NewsDialog() {
             <label className="text-sm font-medium text-slate-700 ml-0.5">
               Category <span className="text-red-500">*</span>
             </label>
-            <Select name="category" defaultValue="football">
+            <Select name="category" defaultValue="FOOTBALL">
               <SelectTrigger className="h-11 w-full rounded-xl border-slate-200 bg-slate-50/30 px-4 text-sm focus:ring-1 focus:ring-[#00C853]">
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent className="rounded-xl shadow-lg">
-                <SelectItem value="football">Football</SelectItem>
-                <SelectItem value="tennis">Tennis</SelectItem>
-                <SelectItem value="basketball">Basketball</SelectItem>
+                <SelectItem value="FOOTBALL">Football</SelectItem>
+                <SelectItem value="TENNIS">Tennis</SelectItem>
+                <SelectItem value="BASKETBALL">Basketball</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -118,8 +130,6 @@ export function NewsDialog() {
             <label className="text-sm font-medium text-slate-700 ml-0.5">
               Upload Image
             </label>
-
-            {/* Hidden Input */}
             <input
               type="file"
               ref={fileInputRef}
@@ -127,10 +137,9 @@ export function NewsDialog() {
               accept="image/*"
               className="hidden"
             />
-
             <div
               onDragOver={onDragOver}
-              onDragLeave={onDragLeave}
+              onDragLeave={() => setIsDragging(false)}
               onDrop={onDrop}
               onClick={() => fileInputRef.current?.click()}
               className={`group border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center transition-all cursor-pointer ${
@@ -145,7 +154,7 @@ export function NewsDialog() {
                     <img
                       src={URL.createObjectURL(file)}
                       alt="Preview"
-                      className="h-20 w-28 object-cover rounded-lg shadow-md border border-white"
+                      className="h-24 w-36 object-cover rounded-lg shadow-md border border-white"
                     />
                     <button
                       type="button"
@@ -153,7 +162,7 @@ export function NewsDialog() {
                         e.stopPropagation();
                         setFile(null);
                       }}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full shadow-lg opacity-0 group-hover/img:opacity-100 transition-opacity"
+                      className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full shadow-lg opacity-100 transition-opacity"
                     >
                       <X size={12} />
                     </button>
@@ -165,19 +174,13 @@ export function NewsDialog() {
               ) : (
                 <>
                   <div className="bg-white p-3 rounded-xl shadow-sm mb-3">
-                    <ImagePlus
-                      className="h-6 w-6 text-slate-600"
-                      strokeWidth={2}
-                    />
+                    <ImagePlus className="h-6 w-6 text-slate-600" />
                   </div>
                   <p className="text-sm text-slate-600 font-medium text-center">
                     Drop Image or{" "}
                     <span className="text-[#00C853] font-semibold underline underline-offset-2">
                       Browse here
                     </span>
-                  </p>
-                  <p className="text-[11px] text-slate-400 mt-1.5 uppercase tracking-wider font-semibold">
-                    JPEG, PNG, WebP • Max 40MB
                   </p>
                 </>
               )}
@@ -186,9 +189,10 @@ export function NewsDialog() {
 
           <Button
             type="submit"
-            className="w-full cursor-pointer bg-[#00C853] hover:bg-[#00b049] text-white h-12 rounded-xl text-sm font-bold shadow-md shadow-green-100/50 mt-2 transition-all active:scale-[0.98]"
+            disabled={isLoading}
+            className="w-full cursor-pointer bg-[#00C853] hover:bg-[#00b049] text-white h-12 rounded-xl text-sm font-bold shadow-md mt-2 transition-all active:scale-[0.98]"
           >
-            Create News
+            {isLoading ? <Loader2 className="animate-spin" /> : "Create News"}
           </Button>
         </form>
       </DialogContent>
