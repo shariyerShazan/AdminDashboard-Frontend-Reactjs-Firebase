@@ -8,11 +8,16 @@ import UserManagement from "@/dashboard/pages/userManagement/UserManagement";
 import MainLayout from "@/layouts/MainLayout";
 // import path from "path";
 import { createBrowserRouter } from "react-router";
+import ProtectedRoute from "./ProtectedRoute";
 
 export const Routes = createBrowserRouter([
   {
     path: "dashboard",
-    element: <MainLayout />,
+    element: (
+      <ProtectedRoute>
+        <MainLayout />
+      </ProtectedRoute>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {
@@ -21,24 +26,24 @@ export const Routes = createBrowserRouter([
       },
       {
         path: "news-and-update",
-        element: <NewsAndUpdate />
+        element: <NewsAndUpdate />,
       },
       {
-        path: "users-management" ,
-        element: <UserManagement />
+        path: "users-management",
+        element: <UserManagement />,
       },
       {
-        path: "settings" ,
-        element: <DashboardSetting />
-      }
+        path: "settings",
+        element: <DashboardSetting />,
+      },
     ],
   },
   {
-    path: "login" ,
-    element: <LoginPage />
+    path: "login",
+    element: <LoginPage />,
   },
   {
-    path: "forgot-password" ,
-    element: <ForgotPasswordPage />
-  }
+    path: "forgot-password",
+    element: <ForgotPasswordPage />,
+  },
 ]);
