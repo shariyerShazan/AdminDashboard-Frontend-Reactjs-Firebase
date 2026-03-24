@@ -11,7 +11,7 @@ import type { ReactNode } from "react";
 export interface Column<T> {
   header: string;
   key?: keyof T | string;
-  render?: (item: T) => ReactNode;
+  render?: (item: T, index: number) => React.ReactNode;
 }
 
 interface CommonTableProps<T> {
@@ -48,7 +48,7 @@ const CommonTable = <T,>({ columns, data }: CommonTableProps<T>) => {
                     className="py-3 text-[15px] text-slate-600 first:pl-6 last:pr-6"
                   >
                     {col.render
-                      ? col.render(row)
+                      ? col.render(row, rowIndex)
                       : (row[col.key as keyof T] as ReactNode)}
                   </TableCell>
                 ))}
